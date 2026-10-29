@@ -4,6 +4,12 @@ Step-by-step photo guide for setting up and babysitting tractive battery balanci
 
 The whole site is the single `index.html` file, with the photos and readings built in. It's hosted with GitHub Pages from the `main` branch.
 
-The tracker shares readings through a Firebase Firestore database. The web config lives in `firebase-config.js` and the database rules in `firestore.rules`. Until the config is filled in, readings are saved only in the browser you add them from.
+Live site: https://lwhitehouse8.github.io/mur-balancing/
 
-On first connect, the page loads the readings exported up to 29 Oct 2026 into the empty database. Any readings people saved on their own device before then get uploaded the next time they open the page.
+## How the tracker stores readings
+
+- All shared readings live in `readings.csv` (time, high, low, avg, note).
+- **Add reading** on the Tracking tab opens a pre-filled GitHub issue. Pressing **Create** runs `.github/workflows/add-reading.yml`, which checks the numbers, adds the row to `readings.csv`, closes the issue with a reply and redeploys the site. Anyone logging readings needs a GitHub account.
+- Readings that haven't been shared yet stay on that device and show as "Not shared yet" with a **Share** link.
+- To fix or remove a reading, edit `readings.csv` directly on GitHub.
+- The Assumptions panel (capacity, resistor, hours) is saved per device.

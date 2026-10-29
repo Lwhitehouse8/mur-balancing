@@ -293,6 +293,7 @@ details.stuck summary:focus-visible, a:focus-visible { outline: 3px solid var(--
 #tab-tracking button.primary:hover{filter:brightness(1.05)}
 #tab-tracking button.link{border:0;background:none;padding:4px 6px;color:var(--muted);font-weight:500;font-size:13px}
 #tab-tracking button.link.danger{color:var(--bad)}
+#tab-tracking a.share{font-weight:600;font-size:13px;color:var(--accent);margin-right:6px}
 #tab-tracking .msg{font-size:13px;color:var(--muted);min-height:1em}
 #tab-tracking .msg.err{color:var(--bad)}
 #tab-tracking .tablewrap{overflow-x:auto}
@@ -653,6 +654,7 @@ img { max-width: 100%; }
         <thead><tr><th>Time</th><th>High V</th><th>Low V</th><th>Mismatch</th><th>High SOC</th><th>Low SOC</th><th>Gap</th><th>Balanced</th><th>Note</th><th></th></tr></thead>
         <tbody id="tb"></tbody>
       </table>
+      <p class="small" style="margin-top:8px">To fix or remove a shared reading, edit <a href="https://github.com/Lwhitehouse8/mur-balancing/edit/main/readings.csv" target="_blank" rel="noopener">readings.csv on GitHub</a>.</p>
       <p class="empty" id="tblEmpty">No readings yet. Add the first one above, straight from the BMS status printout.</p>
     </div>
   </section>
@@ -667,7 +669,7 @@ img { max-width: 100%; }
         <label for="aStart">Day starts (hour)<input id="aStart" type="number" step="1" min="0" max="23" value="9"></label>
         <label for="aEnd">Day ends (hour)<input id="aEnd" type="number" step="1" min="1" max="24" value="23"></label>
       </div>
-      <p class="msg" id="aMsg" style="margin:8px 0 0">Changes here are saved for everyone using this tracker.</p>
+      <p class="msg" id="aMsg" style="margin:8px 0 0">Changes here are saved on this device only.</p>
       <p class="small" style="margin-top:10px">State of charge comes from a generic NMC rest-voltage curve. The ENEPAQ module datasheet gives 3 Ah per VTC6 cell (21 Ah per 7p group) but no voltage to SOC table, so treat the absolute SOC figures as roughly ±5%. The Balanced percentage compares readings against each other and is much less sensitive to the curve. Time left is worked out from the bleed resistor alone: the high group is stepped down the voltage curve to the low cell's state of charge, and at each step the bleed current is that cell voltage divided by the resistor, times the duty cycle.</p>
     </details>
   </section>
@@ -683,7 +685,6 @@ img { max-width: 100%; }
 </div>
 </div>
 
-<script type="application/json" id="seedData">{"readings":[{"id":"s_w8hiqv25q1x8ltpcc2hb","t":1792371960000,"high":4.071,"low":3.643,"note":"After Slave was swapped out post track day","avg":3.854},{"id":"s_r20261019-2215","t":1792408500000,"high":4.053,"low":3.643,"note":"First reading, time approximate","avg":3.837},{"id":"s_r20261019-2345","t":1792413900000,"high":4.047,"low":3.643,"note":"","avg":3.832},{"id":"s_r20261020-0047","t":1792417620000,"high":4.043,"low":3.643,"note":"End of Monday session","avg":3.828},{"id":"s_r20261020-0837","t":1792445820000,"high":4.039,"low":3.642,"note":"20 min into Tuesday session","avg":3.825},{"id":"s_o86kqts4xvbmjegs0f3y","t":1792454520000,"high":4.029,"low":3.641,"note":"","avg":3.816},{"id":"s_ubq73qj3tik8n9p8loji","t":1792483140000,"high":3.991,"low":3.638,"note":"","avg":3.786},{"id":"s_r20261020-2136","t":1792492560000,"high":3.978,"low":3.638,"note":"From BMS tool screenshot","avg":3.775},{"id":"s_8rmsfyj2y0ghzn2ysr4x","t":1792535280000,"high":3.975,"low":3.638,"note":"morning wednesday","avg":3.773},{"id":"s_v3fhkyq7eljnsqq47s8m","t":1792556700000,"high":3.961,"low":3.636,"note":"","avg":3.762},{"id":"s_mouhmfkud0118bqo4tvf","t":1792563120000,"high":4.084,"low":3.766,"note":"","avg":3.891},{"id":"s_wz74c4rq7vxic9h3wa1o","t":1792587720000,"high":4.067,"low":3.76,"note":"","avg":3.878},{"id":"s_va24oeb4yp7b2s2io7nm","t":1792592400000,"high":4.062,"low":3.759,"note":"","avg":3.875},{"id":"s_1eiq36s5o76oky7289ou","t":1792592880000,"high":4.058,"low":3.759,"note":"","avg":3.873},{"id":"s_ndsi5qx3sjly9bjcvw02","t":1792599000000,"high":4.054,"low":3.759,"note":"","avg":3.871},{"id":"s_uqtglqq2ve90cz2js8ql","t":1792627380000,"high":4.053,"low":3.759,"note":"","avg":3.871},{"id":"s_jupysq3ui2sne0et4npj","t":1792639740000,"high":4.034,"low":3.759,"note":"","avg":3.862},{"id":"s_0uqa5c5o1spskqqmkjkc","t":1792661460000,"high":4.026,"low":3.752,"note":""},{"id":"s_zgzl7frddbzdpnu3nqq1","t":1792815540000,"high":3.987,"low":3.711,"note":"","avg":3.828},{"id":"s_2kpfij7alztjkyly9tdg","t":1792824840000,"high":3.983,"low":3.731,"note":"","avg":3.826},{"id":"s_dqpboqrmccaon60lp0eo","t":1792834140000,"high":3.971,"low":3.73,"note":"","avg":3.821},{"id":"s_pjqmwlifkkyd08jblzni","t":1792843560000,"high":4.121,"low":3.93,"note":"","avg":4.002},{"id":"s_hgt368tn3l38vv1iqjju","t":1792843860000,"high":4.113,"low":3.928,"note":"","avg":3.999},{"id":"s_e03aarrklaqs7i7e23p1","t":1792844700000,"high":4.112,"low":3.927,"note":"post charge, after a little settle and now packing up so balancing off for the night","avg":3.997},{"id":"s_fti47vucln50uz0nbnce","t":1792844940000,"high":4.1,"low":3.916,"note":"","avg":3.989},{"id":"s_72lduahfkly7m9742w9w","t":1792959780000,"high":4.099,"low":3.912,"note":"","avg":3.987},{"id":"s_1j471xkzshdk9d3u5b5o","t":1793031180000,"high":4.105,"low":3.942,"note":"","avg":4.003},{"id":"s_y5t735hme68vuatqvrbx","t":1793092080000,"high":4.169,"low":4.018,"note":"post charge","avg":4.068},{"id":"s_or2d2bj2hfp7x928qrol","t":1793121960000,"high":4.077,"low":3.871,"note":"during track","avg":3.955},{"id":"s_7ofstc0oef6eoqwojtcx","t":1793144100000,"high":4.069,"low":3.847,"note":"during track but like 10 mins later","avg":3.931},{"id":"s_4nehlihj1r7iwfo5xb3p","t":1793144220000,"high":3.795,"low":3.509,"note":"","avg":3.663},{"id":"s_2ca2nneizaer2jbbxxxq","t":1793153520000,"high":3.799,"low":3.572,"note":"","avg":3.665},{"id":"s_i8dtgjy8rwuwbhnf527w","t":1793187840000,"high":3.798,"low":3.573,"note":"","avg":3.662},{"id":"s_mi42psgp1pfal4ylrsdb","t":1793190420000,"high":3.797,"low":3.572,"note":"","avg":3.653},{"id":"s_vlaodp1onk0goqvpa6qi","t":1793193120000,"high":3.797,"low":3.572,"note":"","avg":3.653},{"id":"s_d6olz0czhfxls1ihaj5m","t":1793258400000,"high":3.783,"low":3.569,"note":"","avg":3.638}],"settings":{"R":33,"cap":21,"duty":100,"end":23,"start":9},"exported":1793258400000}</script>
 <script>
 (function(){
   // Generic NMC 18650 rest voltage (V) vs SOC (%)
@@ -752,12 +753,16 @@ img { max-width: 100%; }
     rs.forEach(function(r){
       var d=derive(r), bal=g0>0?(g0-d.gap)/g0*100:0;
       var tr=document.createElement("tr");
-      [[fmtTime(r.t),""],[r.high.toFixed(3),"mono"],[r.low.toFixed(3),"mono"],[((r.high-r.low)*1000).toFixed(0)+" mV","mono"],[f1(d.hs)+"%",""],[f1(d.ls)+"%",""],[f1(d.gap)+"%",""],[f1(bal)+"%",""],[r.note||"","note"]].forEach(function(x){
+      [[fmtTime(r.t),""],[r.high.toFixed(3),"mono"],[r.low.toFixed(3),"mono"],[((r.high-r.low)*1000).toFixed(0)+" mV","mono"],[f1(d.hs)+"%",""],[f1(d.ls)+"%",""],[f1(d.gap)+"%",""],[f1(bal)+"%",""],[(r.pending?"Not shared yet. ":"")+(r.note||""),"note"]].forEach(function(x){
         var td=document.createElement("td");td.textContent=x[0];if(x[1])td.className=x[1];tr.appendChild(td);});
-      var td=document.createElement("td"), b=document.createElement("button");
-      b.type="button";b.className="link"+(pendingDel===r.id?" danger":"");b.textContent=pendingDel===r.id?"Confirm delete":"Delete";
-      b.addEventListener("click",function(){onDelete(r.id)});
-      td.appendChild(b);tr.appendChild(td);tb.appendChild(tr);
+      var td=document.createElement("td");
+      if(r.pending){
+        var sh=document.createElement("a");sh.className="share";sh.textContent="Share";sh.href=issueUrl(r);sh.target="_blank";sh.rel="noopener";
+        var b=document.createElement("button");b.type="button";b.className="link"+(pendingDel===r.id?" danger":"");
+        b.textContent=pendingDel===r.id?"Confirm remove":"Remove";b.addEventListener("click",function(){onDelete(r.id)});
+        td.appendChild(sh);td.appendChild(b);
+      }
+      tr.appendChild(td);tb.appendChild(tr);
     });
     var last=rs[rs.length-1], d=derive(last), bal=g0>0?Math.max(0,(g0-d.gap)/g0*100):0;
     $("sBal").textContent=f1(bal)+"%"; $("sBalD").textContent="since "+fmtTime(rs[0].t,true);
@@ -824,19 +829,11 @@ img { max-width: 100%; }
     if(!isFinite(t)){setMsg("Enter the time of the reading.",true);return;}
     if(!(h>=2.5&&h<=4.25)||!(l>=2.5&&l<=4.25)){setMsg("Cell voltages should be between 2.5 and 4.25 V.",true);return;}
     if(l>h){setMsg("Low cell voltage is higher than the high cell. Check the two aren't swapped.",true);return;}
-    var doc={t:t,high:h,low:l,note:($("fN").value||"").trim().slice(0,140)}; if(isFinite(a))doc.avg=a;
-    if(shared){
-      $("fBtn").disabled=true;setMsg("Saving…");
-      shared.add(doc).then(function(){
-        setMsg("Reading added for everyone.");["fH","fL","fA","fN"].forEach(function(i){$(i).value=""});$("fT").value=nowLocal();
-      }).catch(function(e){setMsg("Couldn't save the reading: "+(e&&e.message||"unknown error"),true);})
-      .finally(function(){$("fBtn").disabled=false;});
-      return;
-    }
-    doc.id="l_"+Date.now().toString(36);
-    local.added.push(doc);
-    if(!saveLocal()){local.added.pop();setMsg("Couldn't save. This browser is blocking storage (private window?).",true);return;}
-    loadReadings();setMsg("Reading added on this device.");
+    var doc={id:"l_"+Date.now().toString(36),t:t,high:h,low:l,note:($("fN").value||"").trim().slice(0,140)}; if(isFinite(a))doc.avg=a;
+    local.added.push(doc);saveLocal();mergeReadings();
+    var link=document.createElement("a");link.href=issueUrl(doc);link.target="_blank";link.rel="noopener";
+    document.body.appendChild(link);link.click();link.remove();
+    setMsg("GitHub opened in a new tab. Press Create there to share it. It shows up for everyone in about a minute.");
     ["fH","fL","fA","fN"].forEach(function(i){$(i).value=""});$("fT").value=nowLocal();
   });
 
@@ -864,10 +861,7 @@ img { max-width: 100%; }
   function onDelete(id){
     if(pendingDel!==id){pendingDel=id;render();setTimeout(function(){if(pendingDel===id){pendingDel=null;render();}},4000);return;}
     pendingDel=null;
-    if(shared){shared.del(id).catch(function(e){setMsg("Couldn't delete: "+(e&&e.message||"unknown error"),true);});return;}
-    if(id.indexOf("l_")===0) local.added=local.added.filter(function(r){return r.id!==id});
-    else if(local.hidden.indexOf(id)<0) local.hidden.push(id);
-    saveLocal();loadReadings();
+    local.added=local.added.filter(function(r){return r.id!==id});saveLocal();mergeReadings();
   }
 
   // Assumptions: start from the exported values, changes kept in this browser
@@ -880,8 +874,6 @@ img { max-width: 100%; }
   }
   function saveSettings(){
     var data={};Object.keys(AKEYS).forEach(function(id){var x=parseFloat($(id).value);if(isFinite(x))data[AKEYS[id]]=x;});
-    if(shared){setAMsg("Saving…");shared.saveSettings(data).then(function(){setAMsg("Saved for everyone.");})
-      .catch(function(e){setAMsg("Couldn't save: "+(e&&e.message||"unknown error"),true);});return;}
     local.settings=data;setAMsg(saveLocal()?"Saved on this device.":"Couldn't save. This browser is blocking storage.",!saveLocal());
   }
   Object.keys(AKEYS).forEach(function(i){
@@ -889,78 +881,63 @@ img { max-width: 100%; }
   });
   var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(render,150)});
 
-  // Baked-in readings exported from the shared tracker, plus anything added in this browser
-  var SEED=JSON.parse(document.getElementById("seedData").textContent);
-  var KEY="mur-balance-tracker-v1", local={added:[],hidden:[],settings:null};
+  // Readings live in readings.csv in the GitHub repo. New ones arrive through a GitHub issue
+  // that a workflow turns into a new CSV row. Readings not yet in the CSV are kept on this device.
+  var REPO="Lwhitehouse8/mur-balancing";
+  var DEFAULTS={cap:21,R:33,duty:100,start:9,end:23};
+  var KEY="mur-balance-tracker-v1", local={added:[],hidden:[],settings:null}, csvRows=[], loaded=false;
   try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);
-    local.added=Array.isArray(p.added)?p.added:[];local.hidden=Array.isArray(p.hidden)?p.hidden:[];local.settings=p.settings||null;}}catch(e){}
+    local.added=Array.isArray(p.added)?p.added:[];local.settings=p.settings||null;}}catch(e){}
   function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(local));return true;}catch(e){return false;}}
-  function loadReadings(){
-    readings=SEED.readings.filter(function(r){return local.hidden.indexOf(r.id)<0}).concat(local.added)
-      .filter(function(r){return isFinite(r.t)&&isFinite(r.high)&&isFinite(r.low)});
-    render();
-  }
-  var mine=local.added.length;
-  $("dataNote").textContent="Includes "+SEED.readings.length+" readings up to "+fmtTime(SEED.exported)+". New readings and changes are saved in this browser only"+(mine?" ("+mine+" added here so far)":"")+", so download the CSV to share them.";
-  applySettings(local.settings||SEED.settings);
-  loadReadings();
-
-  // Shared database (Firebase). Until it connects, the page runs on this device only.
-  var shared=null;
   function note(t){$("dataNote").textContent=t;}
-  function rid(r){return r.id.replace(/^s_/,"")}
-  function clean(r){var d={t:r.t,high:r.high,low:r.low,note:r.note||""};if(typeof r.avg==="number"&&isFinite(r.avg))d.avg=r.avg;return d;}
-  function startShared(api){
-    shared=api; note("Shared tracker: readings added here show up for everyone, live.");
-    var seeded=false, synced=false;
-    api.onReadings(function(docs){
-      if(!docs.length&&!seeded){seeded=true;
-        SEED.readings.forEach(function(r){api.put(rid(r),clean(r)).catch(function(){});});}
-      if(!synced&&local.added.length){synced=true;
-        var mineNow=local.added.slice();
-        Promise.all(mineNow.map(function(r){return api.put(r.id,clean(r));})).then(function(){
-          local.added=local.added.filter(function(r){return mineNow.indexOf(r)<0});saveLocal();
-          setMsg(mineNow.length>1?mineNow.length+" readings saved earlier on this device are now shared.":"1 reading saved earlier on this device is now shared.");
-        }).catch(function(){synced=false;});
-      }
-      readings=docs.map(function(x){return{id:x.id,t:+x.t,high:+x.high,low:+x.low,avg:x.avg,note:typeof x.note==="string"?x.note:""}})
-        .filter(function(r){return isFinite(r.t)&&isFinite(r.high)&&isFinite(r.low)});
-      render();
-    },function(e){note("Couldn't load shared readings: "+(e&&e.message||"unknown error"));});
-    api.onSettings(function(s){
-      if(s) applySettings(s);
-      else api.saveSettings(local.settings||SEED.settings).catch(function(){});
-    },function(){});
+  function isoLocal(t){var d=new Date(t),p=function(n){return String(n).padStart(2,"0")},o=-d.getTimezoneOffset(),s=o>=0?"+":"-";o=Math.abs(o);
+    return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes())+s+p(Math.floor(o/60))+":"+p(o%60);}
+  function issueUrl(r){
+    var q={template:"reading.yml",title:"Reading: "+r.high.toFixed(3)+" / "+r.low.toFixed(3)+" V",time:isoLocal(r.t),high:r.high.toFixed(3),low:r.low.toFixed(3)};
+    if(typeof r.avg==="number"&&isFinite(r.avg))q.avg=r.avg.toFixed(3);
+    if(r.note)q.note=r.note;
+    return "https://github.com/"+REPO+"/issues/new?"+Object.keys(q).map(function(k){return k+"="+encodeURIComponent(q[k])}).join("&");
   }
-  if(window.__murShared) startShared(window.__murShared);
-  window.addEventListener("mur-db-ready",function(e){if(!shared) startShared(e.detail);});
-  window.addEventListener("mur-db-failed",function(){note("Couldn't reach the shared database, so readings are saved on this device only for now.");});
+  function parseCsv(text){
+    var rows=[],row=[],f="",q=false;
+    for(var i=0;i<text.length;i++){var c=text[i];
+      if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
+      else if(c==='"')q=true; else if(c===","){row.push(f);f="";}
+      else if(c==="\n"||c==="\r"){if(c==="\r"&&text[i+1]==="\n")i++;row.push(f);rows.push(row);row=[];f="";}
+      else f+=c;}
+    if(f!==""||row.length){row.push(f);rows.push(row);}
+    var head=(rows.shift()||[]).map(function(h){return h.trim().toLowerCase()});
+    return rows.filter(function(r){return r.length>=3&&r.join("").trim()}).map(function(r,i){
+      var o={};head.forEach(function(h,j){o[h]=(r[j]||"").trim();});
+      var x={id:"c"+i,t:Date.parse(o.time),high:parseFloat(o.high),low:parseFloat(o.low),note:o.note||""};
+      var av=parseFloat(o.avg);if(isFinite(av))x.avg=av;return x;
+    }).filter(function(r){return isFinite(r.t)&&isFinite(r.high)&&isFinite(r.low)});
+  }
+  function same(a,b){return Math.abs(a.t-b.t)<120000&&Math.abs(a.high-b.high)<0.0005&&Math.abs(a.low-b.low)<0.0005;}
+  function mergeReadings(){
+    var before=local.added.length;
+    if(loaded) local.added=local.added.filter(function(p){return !csvRows.some(function(c){return same(c,p)})});
+    if(local.added.length!==before) saveLocal();
+    readings=csvRows.concat(local.added.map(function(p){var x={};for(var k in p)x[k]=p[k];x.pending=true;return x;}));
+    render();
+    if(loaded){var n=local.added.length;
+      note(csvRows.length+" shared readings."+(n?" "+n+" on this device not shared yet: tap Share next to "+(n>1?"them":"it")+" in the log.":""));}
+  }
+  function loadCsv(){
+    // GitHub's API gives the newest file straight after a change; the site copy can lag a few minutes
+    return fetch("https://api.github.com/repos/"+REPO+"/contents/readings.csv?ref=main",{headers:{Accept:"application/vnd.github.raw"},cache:"no-store"})
+      .then(function(r){if(!r.ok)throw new Error(r.status);return r.text();})
+      .catch(function(){return fetch("readings.csv?v="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();});})
+      .then(function(text){csvRows=parseCsv(text);loaded=true;mergeReadings();})
+      .catch(function(){if(!loaded)note("Couldn't load the shared readings. Check your connection and refresh.");});
+  }
+  note("Loading readings…");
+  applySettings(local.settings||DEFAULTS);
+  mergeReadings();
+  loadCsv();
+  setInterval(function(){if(!document.hidden)loadCsv();},120000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)loadCsv();});
 })();
-</script>
-<script src="firebase-config.js"></script>
-<script type="module">
-const cfg = window.MUR_FIREBASE_CONFIG;
-if (cfg && cfg.apiKey) {
-  try {
-    const V = "10.12.2";
-    const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
-    const fs = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
-    const db = fs.getFirestore(initializeApp(cfg));
-    const api = {
-      onReadings: (cb, err) => fs.onSnapshot(fs.collection(db, "readings"), s => cb(s.docs.map(d => ({ id: d.id, ...d.data() }))), err),
-      add: doc => fs.addDoc(fs.collection(db, "readings"), doc),
-      put: (id, doc) => fs.setDoc(fs.doc(db, "readings", id), doc),
-      del: id => fs.deleteDoc(fs.doc(db, "readings", id)),
-      onSettings: (cb, err) => fs.onSnapshot(fs.doc(db, "settings", "assumptions"), s => cb(s.exists() ? s.data() : null), err),
-      saveSettings: d => fs.setDoc(fs.doc(db, "settings", "assumptions"), d),
-    };
-    window.__murShared = api;
-    window.dispatchEvent(new CustomEvent("mur-db-ready", { detail: api }));
-  } catch (e) {
-    console.error(e);
-    window.dispatchEvent(new CustomEvent("mur-db-failed", { detail: e }));
-  }
-}
 </script>
 <script>
 (function(){

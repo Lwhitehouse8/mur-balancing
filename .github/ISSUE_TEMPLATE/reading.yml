@@ -1,0 +1,36 @@
+name: Balancing reading
+description: Log BMS cell voltages. The tracker page fills this in for you, so just press Create.
+title: "Reading: "
+body:
+  - type: input
+    id: time
+    attributes:
+      label: Time
+      description: When the reading was taken, e.g. 2026-10-29 18:20
+      placeholder: "2026-10-29 18:20"
+    validations:
+      required: true
+  - type: input
+    id: high
+    attributes:
+      label: Cell voltage high (V)
+      placeholder: "4.039"
+    validations:
+      required: true
+  - type: input
+    id: low
+    attributes:
+      label: Cell voltage low (V)
+      placeholder: "3.642"
+    validations:
+      required: true
+  - type: input
+    id: avg
+    attributes:
+      label: Average (V, optional)
+      placeholder: "3.825"
+  - type: input
+    id: note
+    attributes:
+      label: Note (optional)
+      placeholder: "e.g. start of session"
