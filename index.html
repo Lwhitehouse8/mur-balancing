@@ -667,7 +667,7 @@ img { max-width: 100%; }
         <label for="aStart">Day starts (hour)<input id="aStart" type="number" step="1" min="0" max="23" value="9"></label>
         <label for="aEnd">Day ends (hour)<input id="aEnd" type="number" step="1" min="1" max="24" value="23"></label>
       </div>
-      <p class="msg" id="aMsg" style="margin:8px 0 0">Changes here are saved on this device only.</p>
+      <p class="msg" id="aMsg" style="margin:8px 0 0">Changes here are saved for everyone using this tracker.</p>
       <p class="small" style="margin-top:10px">State of charge comes from a generic NMC rest-voltage curve. The ENEPAQ module datasheet gives 3 Ah per VTC6 cell (21 Ah per 7p group) but no voltage to SOC table, so treat the absolute SOC figures as roughly ±5%. The Balanced percentage compares readings against each other and is much less sensitive to the curve. Time left is worked out from the bleed resistor alone: the high group is stepped down the voltage curve to the low cell's state of charge, and at each step the bleed current is that cell voltage divided by the resistor, times the duty cycle.</p>
     </details>
   </section>
@@ -824,7 +824,16 @@ img { max-width: 100%; }
     if(!isFinite(t)){setMsg("Enter the time of the reading.",true);return;}
     if(!(h>=2.5&&h<=4.25)||!(l>=2.5&&l<=4.25)){setMsg("Cell voltages should be between 2.5 and 4.25 V.",true);return;}
     if(l>h){setMsg("Low cell voltage is higher than the high cell. Check the two aren't swapped.",true);return;}
-    var doc={id:"l_"+Date.now().toString(36),t:t,high:h,low:l,note:($("fN").value||"").trim().slice(0,140)}; if(isFinite(a))doc.avg=a;
+    var doc={t:t,high:h,low:l,note:($("fN").value||"").trim().slice(0,140)}; if(isFinite(a))doc.avg=a;
+    if(shared){
+      $("fBtn").disabled=true;setMsg("Saving…");
+      shared.add(doc).then(function(){
+        setMsg("Reading added for everyone.");["fH","fL","fA","fN"].forEach(function(i){$(i).value=""});$("fT").value=nowLocal();
+      }).catch(function(e){setMsg("Couldn't save the reading: "+(e&&e.message||"unknown error"),true);})
+      .finally(function(){$("fBtn").disabled=false;});
+      return;
+    }
+    doc.id="l_"+Date.now().toString(36);
     local.added.push(doc);
     if(!saveLocal()){local.added.pop();setMsg("Couldn't save. This browser is blocking storage (private window?).",true);return;}
     loadReadings();setMsg("Reading added on this device.");
@@ -855,6 +864,7 @@ img { max-width: 100%; }
   function onDelete(id){
     if(pendingDel!==id){pendingDel=id;render();setTimeout(function(){if(pendingDel===id){pendingDel=null;render();}},4000);return;}
     pendingDel=null;
+    if(shared){shared.del(id).catch(function(e){setMsg("Couldn't delete: "+(e&&e.message||"unknown error"),true);});return;}
     if(id.indexOf("l_")===0) local.added=local.added.filter(function(r){return r.id!==id});
     else if(local.hidden.indexOf(id)<0) local.hidden.push(id);
     saveLocal();loadReadings();
@@ -870,6 +880,8 @@ img { max-width: 100%; }
   }
   function saveSettings(){
     var data={};Object.keys(AKEYS).forEach(function(id){var x=parseFloat($(id).value);if(isFinite(x))data[AKEYS[id]]=x;});
+    if(shared){setAMsg("Saving…");shared.saveSettings(data).then(function(){setAMsg("Saved for everyone.");})
+      .catch(function(e){setAMsg("Couldn't save: "+(e&&e.message||"unknown error"),true);});return;}
     local.settings=data;setAMsg(saveLocal()?"Saved on this device.":"Couldn't save. This browser is blocking storage.",!saveLocal());
   }
   Object.keys(AKEYS).forEach(function(i){
@@ -892,7 +904,63 @@ img { max-width: 100%; }
   $("dataNote").textContent="Includes "+SEED.readings.length+" readings up to "+fmtTime(SEED.exported)+". New readings and changes are saved in this browser only"+(mine?" ("+mine+" added here so far)":"")+", so download the CSV to share them.";
   applySettings(local.settings||SEED.settings);
   loadReadings();
+
+  // Shared database (Firebase). Until it connects, the page runs on this device only.
+  var shared=null;
+  function note(t){$("dataNote").textContent=t;}
+  function rid(r){return r.id.replace(/^s_/,"")}
+  function clean(r){var d={t:r.t,high:r.high,low:r.low,note:r.note||""};if(typeof r.avg==="number"&&isFinite(r.avg))d.avg=r.avg;return d;}
+  function startShared(api){
+    shared=api; note("Shared tracker: readings added here show up for everyone, live.");
+    var seeded=false, synced=false;
+    api.onReadings(function(docs){
+      if(!docs.length&&!seeded){seeded=true;
+        SEED.readings.forEach(function(r){api.put(rid(r),clean(r)).catch(function(){});});}
+      if(!synced&&local.added.length){synced=true;
+        var mineNow=local.added.slice();
+        Promise.all(mineNow.map(function(r){return api.put(r.id,clean(r));})).then(function(){
+          local.added=local.added.filter(function(r){return mineNow.indexOf(r)<0});saveLocal();
+          setMsg(mineNow.length>1?mineNow.length+" readings saved earlier on this device are now shared.":"1 reading saved earlier on this device is now shared.");
+        }).catch(function(){synced=false;});
+      }
+      readings=docs.map(function(x){return{id:x.id,t:+x.t,high:+x.high,low:+x.low,avg:x.avg,note:typeof x.note==="string"?x.note:""}})
+        .filter(function(r){return isFinite(r.t)&&isFinite(r.high)&&isFinite(r.low)});
+      render();
+    },function(e){note("Couldn't load shared readings: "+(e&&e.message||"unknown error"));});
+    api.onSettings(function(s){
+      if(s) applySettings(s);
+      else api.saveSettings(local.settings||SEED.settings).catch(function(){});
+    },function(){});
+  }
+  if(window.__murShared) startShared(window.__murShared);
+  window.addEventListener("mur-db-ready",function(e){if(!shared) startShared(e.detail);});
+  window.addEventListener("mur-db-failed",function(){note("Couldn't reach the shared database, so readings are saved on this device only for now.");});
 })();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module">
+const cfg = window.MUR_FIREBASE_CONFIG;
+if (cfg && cfg.apiKey) {
+  try {
+    const V = "10.12.2";
+    const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+    const fs = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+    const db = fs.getFirestore(initializeApp(cfg));
+    const api = {
+      onReadings: (cb, err) => fs.onSnapshot(fs.collection(db, "readings"), s => cb(s.docs.map(d => ({ id: d.id, ...d.data() }))), err),
+      add: doc => fs.addDoc(fs.collection(db, "readings"), doc),
+      put: (id, doc) => fs.setDoc(fs.doc(db, "readings", id), doc),
+      del: id => fs.deleteDoc(fs.doc(db, "readings", id)),
+      onSettings: (cb, err) => fs.onSnapshot(fs.doc(db, "settings", "assumptions"), s => cb(s.exists() ? s.data() : null), err),
+      saveSettings: d => fs.setDoc(fs.doc(db, "settings", "assumptions"), d),
+    };
+    window.__murShared = api;
+    window.dispatchEvent(new CustomEvent("mur-db-ready", { detail: api }));
+  } catch (e) {
+    console.error(e);
+    window.dispatchEvent(new CustomEvent("mur-db-failed", { detail: e }));
+  }
+}
 </script>
 <script>
 (function(){
