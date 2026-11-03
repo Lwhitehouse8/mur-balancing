@@ -748,14 +748,14 @@ img { max-width: 100%; }
         <label for="aEnd">Day ends (hour)<input id="aEnd" type="number" step="1" min="1" max="24" value="23"></label>
       </div>
       <p class="msg" id="aMsg" style="margin:8px 0 0">Changes here are saved on this device only.</p>
-      <p class="small" style="margin-top:10px">State of charge comes from a generic NMC rest-voltage curve. The ENEPAQ module datasheet gives 3 Ah per VTC6 cell (21 Ah per 7p group) but no voltage to SOC table, so treat the absolute SOC figures as roughly ±5%. The Balanced percentage compares readings against each other and is much less sensitive to the curve. Time left is worked out from the bleed resistor alone: the high group is stepped down the voltage curve to the low cell's state of charge, and at each step the bleed current is that cell voltage divided by the resistor, times the duty cycle.</p>
+      <p class="small" style="margin-top:10px">State of charge comes from a Sony/Murata VTC6 curve built from ENEPAQ's 1C discharge test, shifted up 75 mV to estimate the resting voltage. Groups are 7 × 3 Ah = 21 Ah. The 75 mV shift is an estimate, so treat the absolute SOC figures as roughly ±5%. Against real balancing data from 2 to 3 November the curve predicted the high cell to within about 6 mV over a day. The Balanced percentage compares readings against each other and is much less sensitive to the curve. Time left is worked out from the bleed resistor alone: the high group is stepped down the voltage curve to the low cell's state of charge, and at each step the bleed current is that cell voltage divided by the resistor, times the duty cycle.</p>
     </details>
   </section>
 
   <section class="panel">
     <details>
       <summary>Voltage to SOC table</summary>
-      <p class="small" style="margin-top:10px">Generic NMC 18650 rest-voltage curve used for every SOC figure on this page. Voltages between rows are interpolated linearly; at or below the first row reads 0% and above the last reads 100%.</p>
+      <p class="small" style="margin-top:10px">Sony/Murata VTC6 rest-voltage curve (from ENEPAQ's 1C discharge test, +75 mV) used for every SOC figure on this page. Voltages between rows are interpolated linearly; at or below the first row reads 0% and above the last reads 100%.</p>
       <div class="ocv-key"><span>Voltage (V)</span><span>SOC (%)</span></div>
       <div class="ocv" id="ocvGrid" role="list" aria-label="Voltage to SOC pairs"></div>
     </details>
@@ -765,8 +765,10 @@ img { max-width: 100%; }
 
 <script>
 (function(){
-  // Generic NMC 18650 rest voltage (V) vs SOC (%)
-  var OCV=[[3.00,0],[3.35,5],[3.45,10],[3.51,15],[3.56,20],[3.60,25],[3.63,30],[3.66,35],[3.69,40],[3.72,45],[3.75,50],[3.79,55],[3.82,60],[3.86,65],[3.90,70],[3.94,75],[3.98,80],[4.03,85],[4.08,90],[4.13,95],[4.19,100]];
+  // Sony/Murata VTC6 rest voltage (V) vs SOC (%), from ENEPAQ's 1C discharge curve:
+  // digitised, converted from energy % to charge %, then shifted up 75 mV for the 3 A load.
+  // Backtested on 2-3 Nov 2026 balancing at 33 ohm: within about 6 mV over a day.
+  var OCV=[[2.887,0],[3.118,5],[3.222,10],[3.349,15],[3.426,20],[3.485,25],[3.532,30],[3.573,35],[3.622,40],[3.669,45],[3.726,50],[3.772,55],[3.815,60],[3.853,65],[3.893,70],[3.939,75],[3.995,80],[4.028,85],[4.051,90],[4.074,95],[4.146,100]];
   function soc(v){
     if(v<=OCV[0][0]) return 0;
     for(var i=0;i<OCV.length-1;i++){var a=OCV[i],b=OCV[i+1];
